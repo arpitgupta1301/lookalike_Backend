@@ -1,0 +1,7 @@
+service: lookalike-service-temp
+env: flex
+health_check:
+  enable_health_check: False
+automatic_scaling:
+  min_num_instances: 1
+  max_num_instances: 1
