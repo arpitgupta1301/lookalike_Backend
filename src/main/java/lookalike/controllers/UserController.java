@@ -120,5 +120,12 @@ public class UserController {
   	JSONObject commonFilters = bar.getJSONObject("commonFilter");
 	return queryBuilder.runActiveleaseQuery(current, commonFilters);
   }
+  @RequestMapping(value = "totalLeases", method = RequestMethod.POST)
+  public @ResponseBody
+  HashMap<String, String> totalLeases(HttpEntity<String> foo) {
+  	JSONObject bar = new JSONObject(foo.getBody());
+  	JSONObject commonFilters = bar.getJSONObject("commonFilter");
+	return queryBuilder.runTotalLeaseQuery(commonFilters);
+  }
   
 } // class UserController

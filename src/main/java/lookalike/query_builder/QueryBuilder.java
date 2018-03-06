@@ -203,5 +203,31 @@ public final class QueryBuilder {
 		}
 		return response;
 	}
+	public HashMap<String, String> runTotalLeaseQuery(JSONObject commonFilters) {
+		String query = "SELECT count(*) from active_leases";
+		if (commonFilters != null) {
+			query += " where 1";
+			Iterator<?> keys = commonFilters.keys();
+			while(keys.hasNext() ) {
+				String key = (String)keys.next();
+				String value = commonFilters.getString(key);
+				query += String.format(" AND %s=\"%s\"", key, value);
+			}
+		}
+		HashMap<String, String> response = new HashMap<>();
+		try {
+			Connection con = DriverManager.getConnection(
+					JDBC_CONNECTION,JDBC_USERNAME,JDBC_PASSWORD);
+			Statement stmt=con.createStatement();
+            ResultSet rs=stmt.executeQuery(query);
+            while(rs.next()) {
+                String count = rs.getString("count(*)");
+                response.put("count", count);
+            }
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return response;
+	}
 }  
  // class UserController
