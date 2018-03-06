@@ -3,10 +3,16 @@ package lookalike.controllers;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONObject;
+import org.json.JSONString;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -49,6 +55,8 @@ public class UserController {
    * @return The user id or a message error if the user is not found.
    */
 	   private static final String FILE_PATH = "D:/sample.csv";
+	   @Autowired
+	   private QueryBuilder queryBuilder;
 
 	
 	@RequestMapping(value = "getOpportunity", method = {RequestMethod.POST, RequestMethod.OPTIONS})
@@ -103,18 +111,21 @@ public class UserController {
     }
     return "The user id is: " + userId;
   }*/
-  
-  /**
-   * /update  --> Update the email and the name for the user in the database 
-   * having the passed id.
-   * 
-   * @param id The id for the user to update.
-   * @param email The new email.
-   * @param name The new name.
-   * @return A string describing if the user is successfully updated or not.
-   */
-  // ------------------------
-  // PRIVATE FIELDS
-  // ------------------------
+
+  @RequestMapping(value = "activeLeases", method = RequestMethod.POST)
+  public @ResponseBody
+  HashMap<String, String> activeLeases(HttpEntity<String> foo) {
+  	JSONObject bar = new JSONObject(foo.getBody());
+  	String current = bar.getString("current");
+  	JSONObject commonFilters = bar.getJSONObject("commonFilter");
+	return queryBuilder.runActiveleaseQuery(current, commonFilters);
+  }
+  @RequestMapping(value = "totalLeases", method = RequestMethod.POST)
+  public @ResponseBody
+  HashMap<String, String> totalLeases(HttpEntity<String> foo) {
+  	JSONObject bar = new JSONObject(foo.getBody());
+  	JSONObject commonFilters = bar.getJSONObject("commonFilter");
+	return queryBuilder.runTotalLeaseQuery(commonFilters);
+  }
   
 } // class UserController
