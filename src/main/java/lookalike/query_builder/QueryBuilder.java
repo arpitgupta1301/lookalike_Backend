@@ -1,19 +1,23 @@
 package lookalike.query_builder;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import lookalike.models.CsdRequest;
 import lookalike.models.DnBRequest;
 import lookalike.models.OpportunityRequest;
-import lookalike.models.ResponseDTO;  
+import lookalike.models.ResponseDTO;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 
+@Service
 public final class QueryBuilder {
 
   // ------------------------
@@ -31,7 +35,6 @@ public final class QueryBuilder {
   /**
    * /get-by-email  --> Return the id for the user having the passed email.
    * 
-   * @param email The email to search in the database.
    * @return The user id or a message error if the user is not found.
    */
 	
@@ -217,6 +220,59 @@ public final class QueryBuilder {
 	return null;
 
 	}
-	
+	public HashMap<String, String> runActiveleaseQuery(String current, JSONObject commonFilters) {
+		String query = String.format("SELECT %s, count(*) from active_leases", current);
+		if (commonFilters != null) {
+			query += " where 1";
+			Iterator<?> keys = commonFilters.keys();
+			while(keys.hasNext() ) {
+				String key = (String)keys.next();
+				String value = commonFilters.getString(key);
+				query += String.format(" AND %s=\"%s\"", key, value);
+			}
+		}
+		query += String.format(" group by %s", current);
+		HashMap<String, String> response = new HashMap<>();
+		try {
+			Connection con = DriverManager.getConnection(
+					JDBC_CONNECTION,JDBC_USERNAME,JDBC_PASSWORD);
+			Statement stmt=con.createStatement();
+            ResultSet rs=stmt.executeQuery(query);
+            while(rs.next()) {
+                String name = rs.getString(current);
+                String count = rs.getString("count(*)");
+                response.put(name, count);
+            }
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return response;
+	}
+	public HashMap<String, String> runTotalLeaseQuery(JSONObject commonFilters) {
+		String query = "SELECT count(*) from active_leases";
+		if (commonFilters != null) {
+			query += " where 1";
+			Iterator<?> keys = commonFilters.keys();
+			while(keys.hasNext() ) {
+				String key = (String)keys.next();
+				String value = commonFilters.getString(key);
+				query += String.format(" AND %s=\"%s\"", key, value);
+			}
+		}
+		HashMap<String, String> response = new HashMap<>();
+		try {
+			Connection con = DriverManager.getConnection(
+					JDBC_CONNECTION,JDBC_USERNAME,JDBC_PASSWORD);
+			Statement stmt=con.createStatement();
+            ResultSet rs=stmt.executeQuery(query);
+            while(rs.next()) {
+                String count = rs.getString("count(*)");
+                response.put("count", count);
+            }
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return response;
+	}
 }  
  // class UserController
