@@ -20,6 +20,10 @@ import org.springframework.stereotype.Service;
 @Service
 public final class QueryBuilder {
 
+	//private static final String JDBC_CONNECTION = "jdbc:mysql://104.196.123.223:3306/lookalike_dashboard";
+	private static final String JDBC_CONNECTION = "jdbc:mysql://google/lookalike_dashboard?cloudSqlInstance=datatest-148118:us-east1:data-spine-cloud-sql-service&socketFactory=com.google.cloud.sql.mysql.SocketFactory&user=root&password=li4m_ds_root";
+	private static final String JDBC_USERNAME = "root";
+	private static final String JDBC_PASSWORD = "li4m_ds_root";
   // ------------------------
   // PUBLIC METHODS
   // ------------------------
