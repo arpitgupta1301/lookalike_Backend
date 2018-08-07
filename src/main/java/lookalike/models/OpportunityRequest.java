@@ -12,21 +12,44 @@ import java.util.List;
 
 public class OpportunityRequest {
 
-	private String has_purchase_power;
-	private List<String> groupFilter;
+	private List<String> sicFilter;
+	private String existing_customer;
+
+	private String non_existing_customer;
 	
+	private String develop;
+	private String negotiate;	
 	
-	public String getHas_purchase_power() {
-		return has_purchase_power;
+	public List<String> getSicFilter() {
+		return sicFilter;
 	}
-	public void setHas_purchase_power(String has_purchase_power) {
-		this.has_purchase_power = has_purchase_power;
+	public void setSicFilter(List<String> sicFilter) {
+		this.sicFilter = sicFilter;
 	}
-	public List<String> getGroupFilter() {
-		return groupFilter;
+	public String getDevelop() {
+		return develop;
 	}
-	public void setGroupFilter(List<String> groupFilter) {
-		this.groupFilter = groupFilter;
+	public void setDevelop(String develop) {
+		this.develop = develop;
 	}
-	
+
+	public String getNegotiate() {
+		return negotiate;
+	}
+	public void setNegotiate(String negotiate) {
+		this.negotiate = negotiate;
+	}
+
+	public String getExisting_customer() {
+		return existing_customer;
+	}
+	public void setExisting_customer(String existing_customer) {
+		this.existing_customer = existing_customer;
+	}
+	public String getNon_existing_customer() {
+		return non_existing_customer;
+	}
+	public void setNon_existing_customer(String non_existing_customer) {
+		this.non_existing_customer = non_existing_customer;
+	}
 } // class User

@@ -12,21 +12,13 @@ import java.util.List;
 
 public class DnBRequest {
 
-	private String employee_SIZE_RANGE;
-	private List<String> categoryFilter;
-	public String getEmployee_SIZE_RANGE() {
-		return employee_SIZE_RANGE;
+	private List<String> sicFilter;
+	public List<String> getSicFilter() {
+		return sicFilter;
 	}
-	public void setEmployee_SIZE_RANGE(String employee_SIZE_RANGE) {
-		this.employee_SIZE_RANGE = employee_SIZE_RANGE;
+	public void setSicFilter(List<String> sicFilter) {
+		this.sicFilter = sicFilter;
 	}
-	public List<String> getCategoryFilter() {
-		return categoryFilter;
-	}
-	public void setCategoryFilter(List<String> categoryFilter) {
-		this.categoryFilter = categoryFilter;
-	}
-	
 	
 	
 	

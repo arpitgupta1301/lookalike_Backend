@@ -1,5 +1,6 @@
 package lookalike.controllers;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,11 +17,13 @@ import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import lookalike.models.CommonCsvRequest;
 import lookalike.models.CsdRequest;
 import lookalike.models.DnBRequest;
 import lookalike.models.OpportunityRequest;
@@ -35,7 +38,6 @@ public class UserController {
 	
 
 
-	
 
   // ------------------------
   // PUBLIC METHODS
@@ -84,18 +86,20 @@ public class UserController {
 	//	return opportunityDAO.findByAnyParameter(query);
 	}
 	
-	
-	@RequestMapping(value = "/getCSV", produces = "text/csv", method = RequestMethod.POST)
-    public void getCSV(HttpServletResponse response,@RequestBody OpportunityRequest opp) throws IOException {
-		
-		String csvLoc = CsvGenerator.Connect(opp, null, null);
+	@RequestMapping(value = "/getCSV/{tableName}", produces = "text/csv", method = RequestMethod.POST)
+        public void getCSV(@PathVariable String tableName,HttpServletResponse response,@RequestBody CommonCsvRequest comm) throws IOException {
+		String csvLoc = null;
+		csvLoc = CsvGenerator.Connect(comm, tableName);
 		InputStream in = new FileInputStream(csvLoc);
-        response.setContentType("text/csv;charset=utf-8"); 
-        response.setHeader("Content-disposition", "attachment; filename="+csvLoc);
-        FileCopyUtils.copy(in, response.getOutputStream());
-        response.flushBuffer();
-       
-    }
+	        response.setContentType("text/csv;charset=utf-8"); 
+        	response.setHeader("Content-disposition", "attachment; filename="+csvLoc);
+	        FileCopyUtils.copy(in, response.getOutputStream());
+	        File file = new File(csvLoc);
+		response.setContentLengthLong(file.length());
+	        file.delete();
+	        response.flushBuffer();
+	}	
+	
 	
 	
  /* @RequestMapping("/getOpportunity")
@@ -127,5 +131,18 @@ public class UserController {
   	JSONObject commonFilters = bar.getJSONObject("commonFilter");
 	return queryBuilder.runTotalLeaseQuery(commonFilters);
   }
+  
+  /**
+   * /update  --> Update the email and the name for the user in the database 
+   * having the passed id.
+   * 
+   * @param id The id for the user to update.
+   * @param email The new email.
+   * @param name The new name.
+   * @return A string describing if the user is successfully updated or not.
+   */
+  // ------------------------
+  // PRIVATE FIELDS
+  // ------------------------
   
 } // class UserController
